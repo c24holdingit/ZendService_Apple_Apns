@@ -11,7 +11,7 @@
 namespace ZendServiceTest\Apple\Apns\TestAsset;
 
 use ZendService\Apple\Apns\Exception;
-use ZendService\Apple\Apns\Client\Message as ZfMessageClient;
+use ZendService\Apple\Apns\Client as ZfMessageClient;
 
 /**
  * Message Client Proxy
@@ -21,7 +21,7 @@ use ZendService\Apple\Apns\Client\Message as ZfMessageClient;
  * @package    ZendService_Apple
  * @subpackage Apns
  */
-class MessageClient extends ZfMessageClient
+class Client extends ZfMessageClient
 {
     /**
      * Read Response
@@ -41,7 +41,7 @@ class MessageClient extends ZfMessageClient
      * Set the Response
      *
      * @param  string        $str
-     * @return MessageClient
+     * @return Client
      */
     public function setReadResponse($str)
     {
@@ -54,7 +54,7 @@ class MessageClient extends ZfMessageClient
      * Set the write response
      *
      * @param  mixed         $resp
-     * @return MessageClient
+     * @return Client
      */
     public function setWriteResponse($resp)
     {
@@ -63,47 +63,8 @@ class MessageClient extends ZfMessageClient
         return $this;
     }
 
-    /**
-     * Connect to Host
-     *
-     * @return MessageClient
-     */
-    protected function connect($host, array $ssl)
+    public function send(\ZendService\Apple\Apns\Message $message)
     {
-        return $this;
-    }
-
-    /**
-     * Return Response
-     *
-     * @param  string $length
-     * @return string
-     */
-    protected function read($length = 1024)
-    {
-        if (!$this->isConnected()) {
-            throw new Exception\RuntimeException('You must open the connection prior to reading data');
-        }
-        $ret = substr($this->readResponse, 0, $length);
-        $this->readResponse = null;
-
-        return $ret;
-    }
-
-    /**
-     * Write and Return Length
-     *
-     * @param  string $payload
-     * @return int
-     */
-    protected function write($payload)
-    {
-        if (!$this->isConnected()) {
-            throw new Exception\RuntimeException('You must open the connection prior to writing data');
-        }
-        $ret = $this->writeResponse;
-        $this->writeResponse = null;
-
-        return (null === $ret) ? strlen($payload) : $ret;
+        return null;
     }
 }

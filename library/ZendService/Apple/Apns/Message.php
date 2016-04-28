@@ -19,65 +19,87 @@ use Zend\Json\Encoder as JsonEncoder;
 class Message
 {
     /**
-     * Identifier
-     * @var string
+     * @const int
+     */
+    const PRIORITY_NORMAL = 5;
+    const PRIORITY_HIGH = 10;
+    
+    /**
+     * @var string|null
      */
     protected $id;
 
     /**
-     * APN Token
-     * @var string
+     * @var string|null
      */
     protected $token;
+    
+    /**
+     * @var string|null
+     */
+    protected $topic;
 
     /**
-     * Expiration
+     * @var int
+     */
+    protected $priority = self::PRIORITY_NORMAL;
+    
+    /**
      * @var int|null
      */
     protected $expire;
 
     /**
-     * Alert Message
-     * @var Message\Alert|null
+     * @var Alert|null
      */
     protected $alert;
 
     /**
-     * Badge
      * @var int|null
      */
     protected $badge;
 
     /**
-     * Sound
      * @var string|null
      */
     protected $sound;
 
     /**
-     * Content Available
      * @var int|null
      */
     protected $contentAvailable;
 
     /**
-     * Category
      * @var string|null
      */
     protected $category;
 
     /** 
-     * URL Arguments
      * @var array|null
      */
     protected $urlArgs;
 
     /**
-     * Custom Attributes
      * @var array|null
      */
     protected $custom;
-
+    
+    /**
+     * Constructor
+     *
+     * @param string|Alert|null $alert $alert
+     */
+    public function __construct($alert = null, $token = null)
+    {
+        if ($alert !== null) {
+            $this->setAlert($alert);
+        }
+        
+        if($token !== null) {
+            $this->setToken($token);
+        }
+    }
+    
     /**
      * Get Identifier
      *
@@ -96,8 +118,8 @@ class Message
      */
     public function setId($id)
     {
-        if (!is_scalar($id)) {
-            throw new Exception\InvalidArgumentException('Identifier must be a scalar value');
+        if (!preg_match('/^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$/i', $id)) {
+            throw new Exception\InvalidArgumentException('Identifier must be a valid guid.');
         }
         $this->id = $id;
 
@@ -148,6 +170,66 @@ class Message
 
         return $this;
     }
+    
+    /**
+     * Get topic
+     * 
+     * @return string
+     */
+    function getTopic()
+    {
+        return $this->topic;
+    }
+
+    /**
+     * Set topic
+     * 
+     * @param string $topic
+     * @return Message
+     */
+    function setTopic($topic)
+    {
+        if (!is_string($topic)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                    'Topic must be a string, "%s" given.',
+                    gettype($topic)
+            ));
+        }
+        
+        $this->topic = $topic;
+        
+        return $this;
+    }
+    
+    /**
+     * Get priority
+     * 
+     * @return int
+     */
+    function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * Set priority
+     * 
+     * @param int $priority
+     * @return Message
+     */
+    function setPriority($priority)
+    {
+        if (!is_int($priority)) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                    'Priority must be an integer, "%s" given.',
+                    gettype($priority)
+            ));
+        }
+        
+        $this->priority = $priority;
+        
+        return $this;
+    }
 
     /**
      * Get Expiration
@@ -180,7 +262,7 @@ class Message
     /**
      * Get Alert
      *
-     * @return Message\Alert|null
+     * @return Alert|null
      */
     public function getAlert()
     {
@@ -190,13 +272,13 @@ class Message
     /**
      * Set Alert
      *
-     * @param  string|Message\Alert|null $alert
+     * @param  string|Alert|null $alert
      * @return Message
      */
     public function setAlert($alert)
     {
-        if (!$alert instanceof Message\Alert && !is_null($alert)) {
-            $alert = new Message\Alert($alert);
+        if (!$alert instanceof Alert && !is_null($alert)) {
+            $alert = new Alert($alert);
         }
         $this->alert = $alert;
 
@@ -404,16 +486,14 @@ class Message
     public function getPayloadJson()
     {
         $payload = $this->getPayload();
+        
         // don't escape utf8 payloads unless json_encode does not exist.
         if (defined('JSON_UNESCAPED_UNICODE')) {
             $payload = json_encode($payload, JSON_UNESCAPED_UNICODE);
         } else {
             $payload = JsonEncoder::encode($payload);
         }
-        $length = strlen($payload);
 
-        return pack('CNNnH*', 1, $this->id, $this->expire, 32, $this->token)
-            . pack('n', $length)
-            . $payload;
+        return $payload;
     }
 }

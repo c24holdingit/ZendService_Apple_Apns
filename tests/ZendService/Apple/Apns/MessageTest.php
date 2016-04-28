@@ -8,10 +8,10 @@
  * @package   Zend_Service
  */
 
-namespace ZendServiceTest\Apple\Apns\TestAsset;
+namespace ZendServiceTest\Apple\Apns;
 
 use ZendService\Apple\Apns\Message;
-use ZendService\Apple\Apns\Message\Alert;
+use ZendService\Apple\Apns\Alert;
 use Zend\Json\Encoder as JsonEncoder;
 
 /**
@@ -36,7 +36,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $ret = $this->message->setAlert($text);
         $this->assertInstanceOf('ZendService\Apple\Apns\Message', $ret);
         $checkText = $this->message->getAlert();
-        $this->assertInstanceOf('ZendService\Apple\Apns\Message\Alert', $checkText);
+        $this->assertInstanceOf('ZendService\Apple\Apns\Alert', $checkText);
         $this->assertEquals($text, $checkText->getBody());
     }
 
@@ -240,27 +240,19 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     {
         $text = 'hi=привет';
         $this->message->setAlert($text);
-        $this->message->setId(1);
+        $this->message->setId('00000000-0000-0000-0000-000000000000');
         $this->message->setExpire(100);
         $this->message->setToken('0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef');
         $payload = $this->message->getPayload();
         $this->assertEquals($payload, array('aps' => array('alert' => 'hi=привет')));
         if (defined('JSON_UNESCAPED_UNICODE')) {
             $payloadJson = json_encode($payload, JSON_UNESCAPED_UNICODE);
-            $this->assertEquals($payloadJson, '{"aps":{"alert":"hi=привет"}}');
-            $length = 35; // 23 + (2 * 6) because UTF-8 (Russian) "привет" contains 2 bytes per letter
-            $result = pack('CNNnH*', 1, $this->message->getId(), $this->message->getExpire(), 32, $this->message->getToken())
-            . pack('n', $length)
-            . $payloadJson;
-            $this->assertEquals($this->message->getPayloadJson(), $result);
+            $this->assertEquals('{"aps":{"alert":"hi=привет"}}', $payloadJson);
+            $this->assertEquals('{"aps":{"alert":"hi=привет"}}', $this->message->getPayloadJson());
         } else {
             $payloadJson = JsonEncoder::encode($payload);
-            $this->assertEquals($payloadJson, '{"aps":{"alert":"hi=\u043f\u0440\u0438\u0432\u0435\u0442"}}');
-            $length = 59; // (23 + (6 * 6) because UTF-8 (Russian) "привет" converts into 6 bytes per letter constructions
-            $result = pack('CNNnH*', 1, $this->message->getId(), $this->message->getExpire(), 32, $this->message->getToken())
-            . pack('n', $length)
-            . $payloadJson;
-            $this->assertEquals($this->message->getPayloadJson(), $result);
+            $this->assertEquals('{"aps":{"alert":"hi=\u043f\u0440\u0438\u0432\u0435\u0442"}}', $payloadJson);
+            $this->assertEquals('{"aps":{"alert":"hi=\u043f\u0440\u0438\u0432\u0435\u0442"}}', $this->message->getPayloadJson());
         }
     }
 

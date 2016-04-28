@@ -8,7 +8,7 @@
  * @package   Zend_Service
  */
 
-namespace ZendService\Apple\Apns\Message;
+namespace ZendService\Apple\Apns;
 
 use ZendService\Apple\Exception;
 
@@ -18,49 +18,41 @@ use ZendService\Apple\Exception;
 class Alert
 {
     /**
-     * Message Body
      * @var string|null
      */
     protected $body;
 
     /**
-     * Action Locale Key
      * @var string|null
      */
     protected $actionLocKey;
 
     /**
-     * Locale Key
      * @var string|null
      */
     protected $locKey;
 
     /**
-     * Locale Arguments
      * @var array|null
      */
     protected $locArgs;
 
     /**
-     * Launch Image
      * @var string|null
      */
     protected $launchImage;
     
     /**
-     * Message Title
      * @var string|null
      */
     protected $title;
     
     /**
-     * Title Locale Key
      * @var string|null
      */
     protected $titleLocKey;
     
     /**
-     * Title Locale Arguments
      * @var array|null
      */
     protected $titleLocArgs;
@@ -102,7 +94,7 @@ class Alert
             $this->setTitleLocArgs($titleLocArgs);
         }
     }
-
+    
     /**
      * Get Body
      *

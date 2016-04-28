@@ -6,7 +6,9 @@ Provides support for Apple push notifications.
 
 ## Requirements ##
 
-* PHP >= 5.3.3
+* PHP >= 5.5.24
+* curl >= 7.47
+* openssl >= 1.0.2e
 
 ## Getting Started ##
 

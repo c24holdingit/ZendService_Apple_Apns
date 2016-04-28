@@ -12,9 +12,9 @@
     "homepage": "http://packages.zendframework.com/",
     "license": "BSD-3-Clause",
     "autoload": {
-        "psr-0": {
-            "ZendService\\Apple\\Apns\\": "library/",
-            "ZendService\\Apple\\Exception\\": "library/"
+        "psr-4": {
+            "ZendService\\Apple\\": "library/ZendService/Apple/",
+            "ZendServiceTest\\Apple\\Apns\\": "tests/ZendService/Apple/Apns"
         }
     },
     "repositories": [
@@ -24,10 +24,14 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
-        "zendframework/zend-json": "~2.0"
+        "php": ">=5.5.24",
+        "lib-curl": ">=7.47",
+        "zendframework/zend-json": ">=2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
+    },
+    "config": {
+        "secure-http": false
     }
 }
