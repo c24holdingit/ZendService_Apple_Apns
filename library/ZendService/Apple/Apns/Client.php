@@ -127,18 +127,18 @@ class Client
         $ch = $this->getCurlHandle();
         
         $headers = array();
-        $headers[] = 'apns-priority:' . $message->getPriority();
+        $headers[] = 'apns-priority: ' . $message->getPriority();
         
         if($message->getId() !== null) {
-            $headers[] = 'apns-id:' . $message->getId();
+            $headers[] = 'apns-id: ' . $message->getId();
         }
         
         if($message->getTopic() !== null) {
-            $headers[] = 'apns-topic:' . $message->getTopic();
+            $headers[] = 'apns-topic: ' . $message->getTopic();
         }
         
         if($message->getExpire()  !== null) {
-            $headers[] = 'apns-expiration:' . $message->getExpire();
+            $headers[] = 'apns-expiration: ' . $message->getExpire();
         }
 
         curl_setopt($ch, CURLOPT_URL, $this->uris[$this->environment] . $message->getToken());

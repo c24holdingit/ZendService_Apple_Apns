@@ -42,7 +42,7 @@ class Message
     /**
      * @var int
      */
-    protected $priority = self::PRIORITY_NORMAL;
+    protected $priority = self::PRIORITY_HIGH;
     
     /**
      * @var int|null
