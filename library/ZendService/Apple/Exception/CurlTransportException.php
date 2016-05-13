@@ -17,6 +17,6 @@ class CurlTransportException extends \RuntimeException
 {
     public function __construct($code, $description)
     {
-        parent::__construct(sprintf('During execution the curl error %s occured. (%s)', $code, $description));
+        parent::__construct(sprintf('During execution the curl error %s occured. (%s)', $code, $description), $code);
     }
 }
