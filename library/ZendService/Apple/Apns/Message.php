@@ -306,7 +306,7 @@ class Message
         if ($badge !== null && !$badge == (int) $badge) {
             throw new Exception\InvalidArgumentException('Badge must be null or an integer');
         }
-        $this->badge = $badge;
+        $this->badge = (int) $badge;
 
         return $this;
     }
