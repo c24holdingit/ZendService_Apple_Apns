@@ -23,7 +23,7 @@ class Message
      */
     const PRIORITY_NORMAL = 5;
     const PRIORITY_HIGH = 10;
-    
+
     /**
      * @var string|null
      */
@@ -33,11 +33,6 @@ class Message
      * @var string|null
      */
     protected $token;
-    
-    /**
-     * @var string|null
-     */
-    protected $topic;
 
     /**
      * @var int
@@ -99,7 +94,7 @@ class Message
             $this->setToken($token);
         }
     }
-    
+
     /**
      * Get Identifier
      *
@@ -170,37 +165,7 @@ class Message
 
         return $this;
     }
-    
-    /**
-     * Get topic
-     * 
-     * @return string
-     */
-    function getTopic()
-    {
-        return $this->topic;
-    }
 
-    /**
-     * Set topic
-     * 
-     * @param string $topic
-     * @return Message
-     */
-    function setTopic($topic)
-    {
-        if (!is_string($topic)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                    'Topic must be a string, "%s" given.',
-                    gettype($topic)
-            ));
-        }
-        
-        $this->topic = $topic;
-        
-        return $this;
-    }
-    
     /**
      * Get priority
      * 

@@ -89,10 +89,10 @@ class MessageTest extends \PHPUnit_Framework_TestCase
         $this->message->setBadge('string!');
     }
 
-    public function testSetBadgeAllowsNull()
+    public function testSetBadgeConvertsToInteger()
     {
         $this->message->setBadge(null);
-        $this->assertNull($this->message->getBadge());
+        $this->assertEquals(0, $this->message->getBadge());
     }
 
     public function testSetExpireReturnsInteger()

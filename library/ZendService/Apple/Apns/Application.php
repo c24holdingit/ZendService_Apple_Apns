@@ -15,14 +15,19 @@ namespace ZendService\Apple\Apns;
 use ZendService\Apple\Exception;
 
 /**
- * Certificate Object
+ * Application Object
  *
  * @category   ZendService
  * @package    ZendService_Apple
  * @subpackage Apns
  */
-class Certificate
+class Application
 {
+    /**
+     * @var string
+     */
+    protected $bundleId;
+
     /**
      * @var string
      */
@@ -35,15 +40,16 @@ class Certificate
     
     /**
      * Constructor
-     * 
+     *
+     * @param string $bundleId
      * @param string $certificate
      * @param string $passPhrase
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($certificate, $passPhrase = null)
+    public function __construct($bundleId, $certificate, $passPhrase = null)
     {
-         if (!is_string($certificate) || !file_exists($certificate)) {
-            throw new Exception\InvalidArgumentException('Certificate must be a valid path to a APNS certificate');
+        if (!is_string($certificate) || !file_exists($certificate)) {
+           throw new Exception\InvalidArgumentException('Certificate must be a valid path to a APNS certificate');
         }
         
         if ($passPhrase !== null) {
@@ -52,16 +58,27 @@ class Certificate
             }
         }
 
+        $this->bundleId = $bundleId;
         $this->certificate = $certificate;
         $this->passphrase = $passPhrase;
     }
-    
+
+    /**
+     * Returns the bundle id
+     *
+     * @return string
+     */
+    public function getBundleId()
+    {
+        return $this->bundleId;
+    }
+
     /**
      * Returns the certificates path
      * 
      * @return string
      */
-    function getPath()
+    public function getCertificatePath()
     {
         return $this->certificate;
     }
@@ -71,7 +88,7 @@ class Certificate
      * 
      * @return string
      */
-    function getPassphrase()
+    public function getCertificatePassword()
     {
         return $this->passphrase;
     }

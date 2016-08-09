@@ -44,9 +44,9 @@ class Client
     protected $environment = self::PRODUCTION_URI;
     
     /**
-     * @var certificate
+     * @var Application
      */
-    protected $certificate;
+    protected $applications;
 
     /**
      * @var resource
@@ -54,13 +54,13 @@ class Client
     protected $curlHandle;
 
     /**
-     * Sets the apns certificate
+     * Sets the applications the client is able to push notifications for
      * 
-     * @param Certificate $certificate
+     * @param Application[] $applications
      */
-    public function setCertificate(Certificate $certificate)
+    public function setApplications(array $applications)
     {
-        $this->certificate = $certificate;
+        $this->applications = $applications;
     }
     
     /**
@@ -104,13 +104,8 @@ class Client
         
         curl_setopt($this->curlHandle, CURLOPT_POST, true);
         curl_setopt($this->curlHandle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
-        curl_setopt($this->curlHandle, CURLOPT_SSLCERT, $this->certificate->getPath());
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curlHandle, CURLOPT_HEADER, true);
-        
-        if($this->certificate->getPassphrase() != null) {
-            curl_setopt($this->curlHandle, CURLOPT_SSLCERTPASSWD, $this->certificate->getPassphrase());
-        }
         
         return $this->curlHandle;
     }
@@ -118,23 +113,28 @@ class Client
     /**
      * Send Message
      *
-     * @param ApnsMessage $message
+     * @param ApnsMessage $message The push message
+     * @param string $application The application identifier e.g. bundle identifier
      * @return MessageResponse
      * @throws Exception\CurlTransportException
+     * @throws Exception\InvalidArgumentException
      */
-    public function send(Message $message)
+    public function send(Message $message, $application)
     {
+        if(!isset($this->applications[$application])) {
+            throw new Exception\InvalidArgumentException(sprintf('The application %s was not configured', $application));
+        }
+
+        $app = $this->applications[$application];
+
         $ch = $this->getCurlHandle();
         
         $headers = array();
         $headers[] = 'apns-priority: ' . $message->getPriority();
+        $headers[] = 'apns-topic: ' . $app->getBundleId();
         
         if($message->getId() !== null) {
             $headers[] = 'apns-id: ' . $message->getId();
-        }
-        
-        if($message->getTopic() !== null) {
-            $headers[] = 'apns-topic: ' . $message->getTopic();
         }
         
         if($message->getExpire()  !== null) {
@@ -144,6 +144,11 @@ class Client
         curl_setopt($ch, CURLOPT_URL, $this->uris[$this->environment] . $message->getToken());
         curl_setopt($ch, CURLOPT_POSTFIELDS, $message->getPayloadJson());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSLCERT, $app->getCertificatePath());
+
+        if($app->getCertificatePassword() != null) {
+            curl_setopt($ch, CURLOPT_SSLCERTPASSWD, $app->getCertificatePassword());
+        }
         
         $response = curl_exec($ch);
         

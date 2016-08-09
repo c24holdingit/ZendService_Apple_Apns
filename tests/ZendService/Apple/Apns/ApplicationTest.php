@@ -10,7 +10,7 @@
 
 namespace ZendServiceTest\Apple\Apns;
 
-use ZendService\Apple\Apns\Certificate;
+use ZendService\Apple\Apns\Application;
 use ZendService\Apple\Exception\InvalidArgumentException;
 
 /**
@@ -21,39 +21,39 @@ use ZendService\Apple\Exception\InvalidArgumentException;
  * @group      ZendService_Apple
  * @group      ZendService_Apple_Apns
  */
-class CertificateTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
     public function testValidInitializationWithoutPassword()
     {
-        $certificate = new Certificate(__DIR__ . '/TestAsset/certificate.pem');
+        $application = new Application('bundle-id', __DIR__ . '/TestAsset/certificate.pem');
     }
     
     public function testValidInitializationWithPassword()
     {
-        $certificate = new Certificate(__DIR__ . '/TestAsset/certificate.pem', 'test_password');
+        $application = new Application('bundle-id', __DIR__ . '/TestAsset/certificate.pem', 'test_password');
     }
     
     public function testArrayTypeForCertificate()
     {
         $this->setExpectedException(InvalidArgumentException::class);
-        $certificate = new Certificate(array('not/a/valid/path'));
+        $application = new Application('bundle-id', array('not/a/valid/path'));
     }
     
     public function testNumberTypeForCertificate()
     {
         $this->setExpectedException(InvalidArgumentException::class);
-        $certificate = new Certificate(4);
+        $application = new Application('bundle-id', 4);
     }
     
     public function testMissingFile()
     {
         $this->setExpectedException(InvalidArgumentException::class);
-        $certificate = new Certificate('not/a/valid/path');
+        $application = new Application('bundle-id', 'not/a/valid/path');
     }
     
     public function testInvalidTypeForPassword()
     {
         $this->setExpectedException(InvalidArgumentException::class);
-        $certificate = new Certificate(array('password_array'));
+        $application = new Application('bundle-id', array('password_array'));
     }
 }
