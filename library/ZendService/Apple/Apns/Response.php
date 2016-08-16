@@ -252,7 +252,7 @@ class Response
         
         // status code
         $matches = array();
-        preg_match('/^HTTP\/\d\.\d ([0-9]{3})/', array_shift($rawHeaders), $matches);
+        preg_match('/^HTTP\/.*([0-9]{3})$/', array_shift($rawHeaders), $matches);
         $headers['code'] = (int)$matches[1];
         
         foreach($rawHeaders as $rawHeader) {
