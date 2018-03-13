@@ -25,7 +25,7 @@ class ResponseTest extends TestCase
 {
     public function testValidInstantiation()
     {
-        $rawHeaders = "HTTP/2.0 200 OK\r\napns-id: 01234567-0123-0123-012345678901";
+        $rawHeaders = "HTTP/2 200\r\napns-id: 01234567-0123-0123-012345678901";
         $rawBody = '';
 
         $response = new Response($rawHeaders, $rawBody);
@@ -39,14 +39,14 @@ class ResponseTest extends TestCase
     public function testNonOkResponses()
     {
         $headers = array(
-            '400' => "HTTP/2.0 400 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '403' => "HTTP/2.0 403 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '405' => "HTTP/2.0 405 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '410' => "HTTP/2.0 410 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '413' => "HTTP/2.0 413 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '429' => "HTTP/2.0 429 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '500' => "HTTP/2.0 500 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '503' => "HTTP/2.0 503 OK\r\napns-id: 01234567-0123-0123-012345678901",
+            '400' => "HTTP/2 400\r\napns-id: 01234567-0123-0123-012345678901",
+            '403' => "HTTP/2 403\r\napns-id: 01234567-0123-0123-012345678901",
+            '405' => "HTTP/2 405\r\napns-id: 01234567-0123-0123-012345678901",
+            '410' => "HTTP/2 410\r\napns-id: 01234567-0123-0123-012345678901",
+            '413' => "HTTP/2 413\r\napns-id: 01234567-0123-0123-012345678901",
+            '429' => "HTTP/2 429\r\napns-id: 01234567-0123-0123-012345678901",
+            '500' => "HTTP/2 500\r\napns-id: 01234567-0123-0123-012345678901",
+            '503' => "HTTP/2 503\r\napns-id: 01234567-0123-0123-012345678901",
         );
 
         foreach($headers as $key => $header) {
@@ -83,14 +83,14 @@ class ResponseTest extends TestCase
         );
 
         foreach($bodies as $key => $body) {
-            $response = new Response("HTTP/2.0 200OK apns-id: 01234567-0123-0123-012345678901", $body);
+            $response = new Response("HTTP/2 200\r\napns-id: 01234567-0123-0123-012345678901", $body);
             $this->assertEquals($key, $response->getErrorReason());
         }
     }
 
     public function testTokenNoLongerActive()
     {
-        $rawHeaders = 'HTTP/2.0 410 OK apns-id: 01234567-0123-0123-012345678901';
+        $rawHeaders = "HTTP/2 410\r\napns-id: 01234567-0123-0123-012345678901";
         $rawBody = '{"reason": "Unregistered", "timestamp": "1460468014"}';
 
         $response = new Response($rawHeaders, $rawBody);
