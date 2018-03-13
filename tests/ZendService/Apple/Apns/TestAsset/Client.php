@@ -63,7 +63,7 @@ class Client extends ZfMessageClient
         return $this;
     }
 
-    public function send(\ZendService\Apple\Apns\Message $message)
+    public function send(\ZendService\Apple\Apns\Message $message, $application)
     {
         return null;
     }

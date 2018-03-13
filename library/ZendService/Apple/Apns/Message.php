@@ -38,7 +38,7 @@ class Message
      * @var int
      */
     protected $priority = self::PRIORITY_HIGH;
-    
+
     /**
      * @var int|null
      */
@@ -69,7 +69,7 @@ class Message
      */
     protected $category;
 
-    /** 
+    /**
      * @var array|null
      */
     protected $urlArgs;
@@ -78,7 +78,12 @@ class Message
      * @var array|null
      */
     protected $custom;
-    
+
+    /**
+     * @var int
+     */
+    protected $mutableContent;
+
     /**
      * Constructor
      *
@@ -89,7 +94,7 @@ class Message
         if ($alert !== null) {
             $this->setAlert($alert);
         }
-        
+
         if($token !== null) {
             $this->setToken($token);
         }
@@ -168,7 +173,7 @@ class Message
 
     /**
      * Get priority
-     * 
+     *
      * @return int
      */
     function getPriority()
@@ -178,7 +183,7 @@ class Message
 
     /**
      * Set priority
-     * 
+     *
      * @param int $priority
      * @return Message
      */
@@ -190,9 +195,9 @@ class Message
                     gettype($priority)
             ));
         }
-        
+
         $this->priority = $priority;
-        
+
         return $this;
     }
 
@@ -406,6 +411,30 @@ class Message
     }
 
     /**
+     * Get aps.mutable-content flag
+     *
+     * @return int
+     */
+    public function getMutableContent()
+    {
+        return $this->mutableContent;
+    }
+
+    /**
+     * Set aps.mutable-content flag
+     *
+     * @param int $mutableContent
+     */
+    public function setMutableContent($mutableContent)
+    {
+        if ($mutableContent !== null && !$mutableContent == (int) $mutableContent) {
+            throw new Exception\InvalidArgumentException('MutableContent must be null or an integer');
+        }
+
+        $this->mutableContent = $mutableContent;
+    }
+
+    /**
      * Get Payload
      * Generate APN array.
      *
@@ -433,6 +462,9 @@ class Message
         if (!is_null($this->urlArgs)) {
             $aps['url-args'] = $this->urlArgs;
         }
+        if (!is_null($this->mutableContent)) {
+            $aps['mutable-content'] = $this->mutableContent;
+        }
         if (!empty($this->custom)) {
             $message = array_merge($this->custom, $message);
         }
@@ -451,7 +483,7 @@ class Message
     public function getPayloadJson()
     {
         $payload = $this->getPayload();
-        
+
         // don't escape utf8 payloads unless json_encode does not exist.
         if (defined('JSON_UNESCAPED_UNICODE')) {
             $payload = json_encode($payload, JSON_UNESCAPED_UNICODE);

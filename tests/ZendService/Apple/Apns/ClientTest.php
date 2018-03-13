@@ -18,6 +18,7 @@ use ZendServiceTest\Apple\Apns\TestAsset\Client;
 use ZendService\Apple\Apns\Message;
 use ZendService\Apple\Apns\Response;
 use ZendService\Apple\Apns\Certificate;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @category   ZendService
@@ -27,7 +28,7 @@ use ZendService\Apple\Apns\Certificate;
  * @group      ZendService_Apple
  * @group      ZendService_Apple_Apns
  */
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends TestCase
 {
     public function setUp()
     {
@@ -47,7 +48,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testConnectThrowsExceptionOnInvalidEnvironment()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->apns->setEnvironment(5);
     }
 }

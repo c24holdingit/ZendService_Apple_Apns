@@ -13,6 +13,7 @@ namespace ZendServiceTest\Apple\Apns;
 use ZendService\Apple\Apns\Message;
 use ZendService\Apple\Apns\Alert;
 use Zend\Json\Encoder as JsonEncoder;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @category   ZendService
@@ -22,7 +23,7 @@ use Zend\Json\Encoder as JsonEncoder;
  * @group      ZendService_Apple
  * @group      ZendService_Apple_Apns
  */
-class MessageTest extends \PHPUnit_Framework_TestCase
+class MessageTest extends TestCase
 {
     public function setUp()
     {
@@ -42,37 +43,37 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAlertThrowsExceptionOnTextNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setAlert(array());
     }
 
     public function testSetAlertThrowsExceptionOnActionLocKeyNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->alert->setActionLocKey(array());
     }
 
     public function testSetAlertThrowsExceptionOnLocKeyNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->alert->setLocKey(array());
     }
 
     public function testSetAlertThrowsExceptionOnLaunchImageNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->alert->setLaunchImage(array());
     }
-    
+
     public function testSetAlertThrowsExceptionOnTitleNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->alert->setTitle(array());
     }
-    
+
     public function testSetAlertThrowsExceptionOnTitleLocKeyNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->alert->setTitleLocKey(array());
     }
 
@@ -85,7 +86,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
     public function testSetBadgeNonNumericThrowsException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setBadge('string!');
     }
 
@@ -93,6 +94,26 @@ class MessageTest extends \PHPUnit_Framework_TestCase
     {
         $this->message->setBadge(null);
         $this->assertEquals(0, $this->message->getBadge());
+    }
+
+
+    public function testSetMutableContentReturnsCorrectNumber()
+    {
+        $num = 1;
+        $this->message->setMutableContent($num);
+        $this->assertEquals($num, $this->message->getMutableContent());
+    }
+
+     public function testSetMutableContentNonNumericThrowsException()
+    {
+        $this->expectException('InvalidArgumentException');
+        $this->message->setMutableContent('string!');
+    }
+
+    public function testSetMutableContentConvertsToInteger()
+    {
+        $this->message->setMutableContent(null);
+        $this->assertEquals(0, $this->message->getMutableContent());
     }
 
     public function testSetExpireReturnsInteger()
@@ -104,7 +125,7 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
     public function testSetExpireNonNumericThrowsException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setExpire('sting!');
     }
 
@@ -117,19 +138,19 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
     public function testSetSoundThrowsExceptionOnNonScalar()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setSound(array());
     }
 
     public function testSetSoundThrowsExceptionOnNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setSound(12345);
     }
 
     public function testSetContentAvailableThrowsExceptionOnNonInteger()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setContentAvailable("string");
     }
 
@@ -157,13 +178,13 @@ class MessageTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCategoryThrowsExceptionOnNonScalar()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setCategory(array());
     }
 
     public function testSetCategoryThrowsExceptionOnNonString()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
         $this->message->setCategory(12345);
     }
 
