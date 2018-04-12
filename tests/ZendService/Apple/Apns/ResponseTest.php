@@ -11,6 +11,7 @@
 namespace ZendServiceTest\Apple\Apns;
 
 use ZendService\Apple\Apns\Response;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @category   ZendService
@@ -20,40 +21,40 @@ use ZendService\Apple\Apns\Response;
  * @group      ZendService_Apple
  * @group      ZendService_Apple_Apns
  */
-class ResponseTest extends \PHPUnit_Framework_TestCase
+class ResponseTest extends TestCase
 {
     public function testValidInstantiation()
     {
-        $rawHeaders = "HTTP/2.0 200 OK\r\napns-id: 01234567-0123-0123-012345678901";
+        $rawHeaders = "HTTP/2 200\r\napns-id: 01234567-0123-0123-012345678901";
         $rawBody = '';
-        
+
         $response = new Response($rawHeaders, $rawBody);
-        
+
         $this->assertEquals(Response::RESULT_OK, $response->getResponseCode());
         $this->assertEquals('01234567-0123-0123-012345678901', $response->getId());
         $this->assertNull($response->getTime());
         $this->assertNull($response->getErrorReason());
     }
-    
+
     public function testNonOkResponses()
     {
         $headers = array(
-            '400' => "HTTP/2.0 400 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '403' => "HTTP/2.0 403 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '405' => "HTTP/2.0 405 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '410' => "HTTP/2.0 410 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '413' => "HTTP/2.0 413 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '429' => "HTTP/2.0 429 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '500' => "HTTP/2.0 500 OK\r\napns-id: 01234567-0123-0123-012345678901",
-            '503' => "HTTP/2.0 503 OK\r\napns-id: 01234567-0123-0123-012345678901",
+            '400' => "HTTP/2 400\r\napns-id: 01234567-0123-0123-012345678901",
+            '403' => "HTTP/2 403\r\napns-id: 01234567-0123-0123-012345678901",
+            '405' => "HTTP/2 405\r\napns-id: 01234567-0123-0123-012345678901",
+            '410' => "HTTP/2 410\r\napns-id: 01234567-0123-0123-012345678901",
+            '413' => "HTTP/2 413\r\napns-id: 01234567-0123-0123-012345678901",
+            '429' => "HTTP/2 429\r\napns-id: 01234567-0123-0123-012345678901",
+            '500' => "HTTP/2 500\r\napns-id: 01234567-0123-0123-012345678901",
+            '503' => "HTTP/2 503\r\napns-id: 01234567-0123-0123-012345678901",
         );
-        
+
         foreach($headers as $key => $header) {
             $response = new Response($header, '');
             $this->assertEquals($key, $response->getResponseCode());
         }
     }
-    
+
     public function testReasons()
     {
         $bodies = array(
@@ -80,29 +81,24 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
             'ServiceUnavailable' => '{"reason": "ServiceUnavailable"}',
             'MissingTopic' => '{"reason": "MissingTopic"}',
         );
-        
+
         foreach($bodies as $key => $body) {
-            $response = new Response("HTTP/2.0 200 OK\r\napns-id: 01234567-0123-0123-012345678901", $body);
+            $response = new Response("HTTP/2 200\r\napns-id: 01234567-0123-0123-012345678901", $body);
             $this->assertEquals($key, $response->getErrorReason());
         }
     }
-    
+
     public function testTokenNoLongerActive()
     {
-        $rawHeaders = <<<HEADERS
-HTTP/2.0 410 OK\r\n
-apns-id: 01234567-0123-0123-012345678901
-HEADERS;
-        $rawBody = <<<BODY
-{"reason": "Unregistered", "timestamp": "1460468014"}
-BODY;
-        
+        $rawHeaders = "HTTP/2 410\r\napns-id: 01234567-0123-0123-012345678901";
+        $rawBody = '{"reason": "Unregistered", "timestamp": "1460468014"}';
+
         $response = new Response($rawHeaders, $rawBody);
-        
+
         $this->assertEquals(Response::RESULT_TOKEN_NO_LONGER_ACTIVE, $response->getResponseCode());
         $this->assertEquals(\DateTime::createFromFormat(1460468014, 'U'), $response->getTime());
         $this->assertEquals(Response::ERROR_UNREGISTERED, $response->getErrorReason());
     }
 
-    
+
 }
