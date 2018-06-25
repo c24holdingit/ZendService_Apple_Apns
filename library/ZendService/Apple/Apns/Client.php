@@ -62,6 +62,21 @@ class Client
     {
         $this->applications = $applications;
     }
+
+    /**
+     * Checks if an application is supported (if a configuration is available)
+     *
+     * @param $application The applications name
+     * @return bool The result
+     */
+    public function isApplicationSupported($application) {
+
+        if(isset($this->applications[$application])) {
+            return true;
+        }
+
+        return false;
+    }
     
     /**
      * Sets the environment
